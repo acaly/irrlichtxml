@@ -238,6 +238,7 @@ namespace irr { namespace xml {
 			if (reader->isEmptyElement())
 				return;
 			int start_layer = (this->*get_current_node_layer)();
+			std::vector<EachCallback> saved = std::move(each_callbacks);
 			while (read())
 			{
 				switch (reader->getNodeType())
@@ -246,7 +247,7 @@ namespace irr { namespace xml {
 					if ((this->*get_current_node_layer)() == start_layer + 1)
 					{
 						auto name = reader->getNodeName();
-						std::for_each(each_callbacks.begin(), each_callbacks.end(), 
+						std::for_each(saved.begin(), saved.end(),
 							[=](EachCallback& e) {
 								if (wcscmp(std::get<0>(e), name) == 0)
 								{
